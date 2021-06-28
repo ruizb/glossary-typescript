@@ -16,6 +16,7 @@ You may not agree with some definitions or examples in this document. Please let
 - [Conditional type](#conditional-type)
 - [Diagnostic message](#diagnostic-message)
 - [Discriminated union](#discriminated-union)
+- [Indirect type narrowing](#indirect-type-narrowing)
 - [IntelliSense](#intellisense)
 - [Intersection type](#intersection-type)
 - [Intrinsic type](#intrinsic-type)
@@ -140,6 +141,41 @@ type Shape = Square | Rectangle | Circle
 Here, `Shape` is the discriminated union, where the discriminant - also known as _singleton property_ or _tag_ - is the `kind` property.
 
 You can also check the official [documentation section on discriminated unions](https://www.typescriptlang.org/docs/handbook/advanced-types.html#discriminated-unions).
+
+### Indirect type narrowing
+
+This is a feature added for TypeScript v4.4 (cf. [this PR](https://github.com/microsoft/TypeScript/pull/44730)). It's the ability for the compiler to [narrow the type](#type-narrowing) of a value by using intermediate `const` values defined with [type guards](#type-guard).
+
+An example is worth a thousand words, so here we go:
+
+##### Example
+
+```ts
+function getSize(value: unknown): number {
+  const valueIsString = typeof value === 'string'
+  return valueIsString ? value.length : 0
+}
+```
+
+Prior to v4.4, we couldn't use `value.length` there because the compiler thought the type of `value` was still `unknown` (and `length` doesn't exist on the type `unknown`). TypeScript didn't know that we narrowed its type to `string` with the intermediate type guard `valueIsString`. As of v4.4, this will compile without any error.
+
+Furthermore, given the original implementation of this feature (this limitation may change in the future), we can go up to **5 intermediate `consts`** before "losing" the type narrowing:
+
+##### Example
+
+```ts
+function getSize(value: unknown): number {
+  const valueIsString1 = typeof value === 'string'
+  const valueIsString2 = valueIsString1
+  const valueIsString3 = valueIsString2
+  const valueIsString4 = valueIsString3
+  const valueIsString5 = valueIsString4
+  const valueIsString6 = valueIsString5
+  // type narrowing of `value` lost, TS error: "Object is of type 'unknown'.(2571)"
+  return valueIsString6 ? value.length : 0
+}
+```
+([playground](https://www.typescriptlang.org/play?ts=4.4.0-dev.20210628#code/GYVwdgxgLglg9mABAcwKZQMowF6oBQBuAhgDYioBci4A1mHAO5gCUVYIAtgEaoBOiAbwBQiRBAQBnKImJlUASQkYovGGGQBGRAF5EUAJ4AHVHGAzS5Hdt0ByKavU2RYydNnlFyh8gBMO83KeKmqazuJgUgEeSsHqAMz+7gox3j5hrlHJXiEALIkWWbHIcekRbgVB3gCs+YEpuaWRSZUhAGy10dnqVc686CC8SM316u0A-JkAdCSo6lAAFohUAAxCAL5AA))
 
 ### IntelliSense
 
