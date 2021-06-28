@@ -34,7 +34,7 @@ You may not agree with some definitions or examples in this document. Please let
 
 ### Ambient declaration
 
-An ambient declaration lets you tell the compiler that a global variable/function exists, and which type it has: "I know you can't find it but trust me, this variable/function exists at runtime, and it has this type". The `declare` keyword lets you write such declaration.
+An ambient declaration lets the developer tell the compiler that a global variable/function exists, and which type it has: "I know you can't find it but trust me, this variable/function exists at runtime, and it has _this_ type". The `declare` keyword lets you write such declaration.
 
 ##### Example
 
@@ -143,11 +143,11 @@ You can also check the official [documentation section on discriminated unions](
 
 ### IntelliSense
 
-IntelliSense is the ability for the IDE - thanks to the language - to provide valuable hints for the developer depending on the context he's in, such as relevant and accurate autocompletions and code transformations. Usually, IDEs provide this feature via the `ctrl + space` shortcut.
+IntelliSense is the ability for the IDE - thanks to the language - to provide valuable hints for the developer depending on the context they're in, such as relevant and accurate autocompletions and code transformations. Usually, IDEs provide this feature via the `ctrl + space` combination of keys.
 
 ### Intersection type
 
-Intersection types were introduced in [TypeScript v1.6](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-1-6.html#intersection-types) as a complement to [union types](#union-type). This allows us to type a value that is both a `A` and a `B`.
+Intersection types were introduced in [TypeScript v1.6](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-1-6.html#intersection-types) as a complement to [union types](#union-type). This allows developers to type a value that is both a `A` and a `B`.
 
 ##### Example
 
@@ -177,11 +177,11 @@ type B = { name: string; age: number } & { name: number; adult: boolean }
 
 Here, `A` is `never`, because the [string literals](#literal-type) `'a'` and `'b'` have nothing in common.
 
-For `B`, its type results in `{ name: never, age: number, adult: boolean }` because `string` and `number` have nothing in common. As one of its properties type is `never`, there's no way to create a value which type is `B`, because no value can be assigned to the `never` type.
+For `B`, its type results in `{ name: never, age: number, adult: boolean }` because `string` and `number` have nothing in common. As one of its properties type is `never`, there's no way to create a value whose type is `B`, because no value can be assigned to the `never` type.
 
 ### Intrinsic type
 
-An intrinsic type is a type which implementation is provided by the TypeScript compiler. It's a type that cannot be expressed by any feature provided by the type system of the language.
+An intrinsic type is a type whose implementation is provided by the TypeScript compiler. It's a type that cannot be expressed by any feature provided by the type system of the language.
 
 It was first introduced [in this PR](https://github.com/microsoft/TypeScript/pull/40580) by a TypeScript maintainer for the v4.1 release. This PR adds 4 intrinsic string types to TypeScript:
 
@@ -196,7 +196,7 @@ More intrinsic types could be added in the future.
 
 ### Literal type
 
-Literal types were introduced in [TypeScript v1.8](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-1-8.html#string-literal-types). They are meant to expect only a specific set of strings, numbers or boolean, instead of "**any** string, number or boolean".
+Literal types were introduced in [TypeScript v1.8](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-1-8.html#string-literal-types). They are meant to expect only a specific set of strings, numbers or boolean, instead of "_any_ string, number or boolean".
 
 ##### Example
 
@@ -238,7 +238,7 @@ const handleResponse = (response: SuccesfulResponse | UnsuccesfulResponse): void
 
 ### Mapped type
 
-Mapped types were introduced in [TypeScript v2.1](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-1.html#mapped-types). They can be used to make _uniform type mapping_, allowing a developer to transform a type into another type of the same "form":
+Mapped types were introduced in [TypeScript v2.1](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-1.html#mapped-types). They can be used to make _uniform type mapping_, allowing a developer to transform a type into another one of the same "form":
 
 - A mapped type can use a string or subset of a string (i.e. [string literal type](#literal-type)) to build an object thanks to the built-in `Record` mapped type:
 
@@ -311,7 +311,7 @@ There is a [section in the official documentation](https://www.typescriptlang.or
 
 ### Type alias
 
-A type alias attaches a name to the definition of a type, whatever its complexity. In addition to naming function and object types like _interfaces_, type aliases can be used to name primitives, unions, tuples... Whatever type actually.
+A type alias attaches a name to the definition of a type, no matter its complexity. In addition to naming function and object types such as _interfaces_, type aliases can be used to name primitives, unions, tuples... Any type actually.
 
 ##### Example
 
@@ -340,9 +340,9 @@ You can go to the [official documentation](https://www.typescriptlang.org/docs/h
 
 ### Type assertion
 
-[Type assertions](https://www.typescriptlang.org/docs/handbook/basic-types.html#type-assertions), frequently named _type casting_ wrongly, let you tell the compiler "trust me, I know a type more suitable for this value than the one you inferred". Contrary to casting in other languages, assertions don't change the structure of the value, they don't have any impact at runtime. The language assumes you did the runtime checks before using a type assertion, so it's your responsibility to make sure a value has the correct type when using an assertion.
+[Type assertions](https://www.typescriptlang.org/docs/handbook/basic-types.html#type-assertions), frequently mistakenly named _type casting_, let the developer tell the compiler "trust me, I know a type more suitable for this value than the one you inferred". Contrary to casting in other languages, assertions don't change the structure of the value, they don't have any impact at runtime. The language assumes the developer did the runtime checks before using a type assertion, so it's the developer's responsibility to make sure a value has the correct type when using an assertion.
 
-There are 2 ways to use a type assertion, either by using the `as X` keyword, or `<X>` syntax.
+There are 2 ways to use a type assertion, either by using the `as X` keyword, or the `<X>` syntax.
 
 ##### Example
 
@@ -354,7 +354,7 @@ const strLength = (name as string).length
 const altStrLength = (<string>name).length
 ```
 
-Bear in mind that, if the type inferred by TypeScript and your type assertion don't overlap, then the compiler will raise an error. To avoid this, either the type assertion must be a subtype of the type inferred by TypeScript, or the other way around.
+Bear in mind that, if the type inferred by TypeScript and the type assertion don't overlap, then the compiler will raise an error. To avoid this, either the type assertion must be a subtype of the type inferred by TypeScript, or the other way around.
 
 ```ts
 const value = 42 // inferred as `number`
@@ -368,9 +368,9 @@ const res = (value as string).length
 
 ### Type check
 
-Type checking is one of the features available with the TypeScript language. The type checker verifies the semantics of the types of your project to make sure the program is "correct" type-wise. Other features included in TypeScript are code parsing, code transformations (TS/JS => JS), language service for tools that allow e.g. [IntelliSense](#intellisense).
+Type checking is one of the features available with the TypeScript language. The type checker verifies the semantics of the types of one's project to make sure the program is "correct" type-wise. Other features included in TypeScript are code parsing, code transformations (TS/JS => JS), language service for tools that allow e.g. [IntelliSense](#intellisense).
 
-If a line of code doesn't type check then a [diagnostic](#diagnostic-message) is generated and displayed as an error/warning to the user.
+If a line of code doesn't type check then a [diagnostic](#diagnostic-message) is generated and displayed as an error/warning to the developer.
 
 ##### Example
 
@@ -414,7 +414,7 @@ By checking the type of `value` with `typeof`, TypeScript knows that in the `if`
 
 ### Type inference
 
-Type inference is the ability for the TypeScript compiler to appropriately _guess_ the type of a value, without manually specifying the type for that value.
+Type inference is the ability for the TypeScript compiler to appropriately **guess** the type of a value, without manually specifying the type for that value.
 
 ##### Example
 
@@ -458,7 +458,7 @@ More examples are available in the [type guard](#type-guard) section.
 
 ### Type predicate
 
-The developer can define type guards specific to his domain by returning a _type predicate_ to a function. A type predicate uses the `paramName is Type` syntax.
+The developer can define type guards specific to their domain by returning a _type predicate_ to a function. A type predicate uses the `paramName is Type` syntax.
 
 ##### Example
 
@@ -489,7 +489,7 @@ if (isUser(value)) {
 }
 ```
 
-We created the `v is User` type predicate as the return value of the `isUser` function, which tells TypeScript that if `isUser(value)` returns true, then `value` is guaranteed to be a `User` in the `if` branch, otherwise it will keep the initial type (`unknown` here).
+We created the `v is User` type predicate as the returned value of the `isUser` function, which tells TypeScript that if `isUser(value)` returns true, then `value` is guaranteed to be a `User` in the `if` branch, otherwise it will keep the initial type (`unknown` here).
 
 Some other examples of type predicates are available in the [TypeScript documentation](https://www.typescriptlang.org/docs/handbook/advanced-types.html#using-type-predicates).
 
