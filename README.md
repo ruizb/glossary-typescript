@@ -16,7 +16,7 @@ You may not agree with some definitions or examples in this document. Please let
 - [Conditional type](#conditional-type)
 - [Diagnostic message](#diagnostic-message)
 - [Discriminated union](#discriminated-union)
-- [Distributive conditional types](#distributive-conditional-types) (contains information regarding _naked types_)
+- [Distributive conditional type](#distributive-conditional-type) (contains information regarding _naked types_)
 - [Indirect type narrowing](#indirect-type-narrowing)
 - [IntelliSense](#intellisense)
 - [Intersection type](#intersection-type)
