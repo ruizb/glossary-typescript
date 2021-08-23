@@ -16,6 +16,7 @@ You may not agree with some definitions or examples in this document. Please let
 - [Conditional type](#conditional-type)
 - [Diagnostic message](#diagnostic-message)
 - [Discriminated union](#discriminated-union)
+- [Distributive conditional types](#distributive-conditional-types) (contains information regarding _naked types_)
 - [Indirect type narrowing](#indirect-type-narrowing)
 - [IntelliSense](#intellisense)
 - [Intersection type](#intersection-type)
@@ -141,6 +142,64 @@ type Shape = Square | Rectangle | Circle
 Here, `Shape` is the discriminated union, where the discriminant - also known as _singleton property_ or _tag_ - is the `kind` property.
 
 You can also check the official [documentation section on discriminated unions](https://www.typescriptlang.org/docs/handbook/advanced-types.html#discriminated-unions).
+
+### Distributive conditional type
+
+This type, introduced in [TypeScript 2.8](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-8.html#distributive-conditional-types), is a conditional type whose type parameter is used as a _naked type_.
+
+A naked type parameter is a type parameter that is not "wrapped" by another type (such as an `Array`, a `Promise`, or a tuple) in the conditional part `TypeParameter extends X ? Y : Z` of the conditional type definition.
+
+##### Example
+
+```ts
+type ValidValue = 'a' | 'b' | 'c'
+
+type MyDistributiveConditionalType<TypeParameter> = TypeParameter extends ValidValue ? 'yes' : 'no'
+
+type T0 = MyDistributiveConditionalType<'a' | 'b' | 'd'>
+// T0: MyDistributiveConditionalType<'a'> | MyDistributiveConditionalType<'b'> | MyDistributiveConditionalType<'d'>
+// T0: ('a' extends ValidValue ? 'yes' : 'no') | ('b' extends ValidValue ? 'yes' : 'no') | ('d' extends ValidValue ? 'yes' : 'no')
+// T0: 'yes' | 'yes' | 'no'
+// T0: 'yes' | 'no'
+```
+
+In this example, the type parameter `TypeParameter` of the conditional type `MyDistributiveConditionalType` is used as is, it is **not wrapped** in the conditional part, hence it's used as a naked type.
+
+The conditional type is **distributed** over each element of the union type `'a' | 'b' | 'd'` passed as the type parameter. Therefore, we end up with the union type `MyDistributiveConditionalType<'a'> | MyDistributiveConditionalType<'b'> | MyDistributiveConditionalType<'d'>`, which computes to `'yes' | 'no'`.
+
+##### Example
+
+```ts
+type ValidValue = 'a' | 'b' | 'c'
+
+type WrappedValue<Value> = { value: Value }
+
+type MyConditionalType<TypeParameter> =
+  WrappedValue<TypeParameter> extends  WrappedValue<ValidValue> ? 'yes' : 'no'
+
+type T1 = MyConditionalType<'a' | 'b' | 'd'>
+// T0: WrappedValue<'a' | 'b' | 'd'> extends  WrappedValue<ValidValue> ? 'yes' : 'no'
+// T0: { value: 'a' | 'b' | 'd' } extends { value: 'a' | 'b' | 'c' } ? 'yes' : 'no'
+// T0: 'no'
+```
+
+Here, the type parameter of `MyConditionalType` is **wrapped** inside the `WrappedValue` type in the conditional part (i.e. `WrappedValue<TypeParameter> extends X ? Y : Z`), hence it's used as a non-naked type.
+
+The conditional type is **not distributed** over each element of the union type `'a' | 'b' | 'd'` passed as the type parameter. Thus, we get `WrappedValue<'a' | 'b' | 'd'> extends  WrappedValue<ValidValue> ? 'yes' : 'no'`, which computes to `'no'` because `'a' | 'b' | 'd' extends 'a' | 'b' | 'c'` is false.
+
+Instead of a custom `WrappedValue` type, a 1-element **tuple** is often used in the wild to prevent distributive conditional types:
+
+```ts
+type ValidValue = 'a' | 'b' | 'c'
+
+type MyOtherConditionalType<TypeParameter> =
+  [TypeParameter] extends  [ValidValue] ? 'yes' : 'no'
+
+type T2 = MyConditionalType<'a' | 'b' | 'd'>
+// T0: ['a' | 'b' | 'd'] extends [ValidValue] ? 'yes' : 'no'
+// T0: ['a' | 'b' | 'd'] extends ['a' | 'b' | 'c'] ? 'yes' : 'no'
+// T0: 'no'
+```
 
 ### Indirect type narrowing
 
