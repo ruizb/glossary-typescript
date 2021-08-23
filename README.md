@@ -195,7 +195,7 @@ type ValidValue = 'a' | 'b' | 'c'
 type MyOtherConditionalType<TypeParameter> =
   [TypeParameter] extends  [ValidValue] ? 'yes' : 'no'
 
-type T2 = MyConditionalType<'a' | 'b' | 'd'>
+type T2 = MyOtherConditionalType<'a' | 'b' | 'd'>
 // T0: ['a' | 'b' | 'd'] extends [ValidValue] ? 'yes' : 'no'
 // T0: ['a' | 'b' | 'd'] extends ['a' | 'b' | 'c'] ? 'yes' : 'no'
 // T0: 'no'
