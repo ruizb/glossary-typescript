@@ -21,8 +21,10 @@ You may not agree with some definitions or examples in this document. Please let
 - [IntelliSense](#intellisense)
 - [Intersection type](#intersection-type)
 - [Intrinsic type](#intrinsic-type)
+- [Key remapping](#key-remapping)
 - [Literal type](#literal-type)
 - [Mapped type](#mapped-type)
+- [Template literal string type](#template-literal-string-type)
 - [Type alias](#type-alias)
 - [Type assertion](#type-assertion)
 - [Type check](#type-check)
@@ -290,6 +292,41 @@ type Uncapitalize<S extends string> = intrinsic;
 
 More intrinsic types could be added in the future.
 
+### Key remapping
+
+The concept of key remapping in [mapped types](#mapped-type) was introduced in [TypeScript v4.1](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-1.html#key-remapping-in-mapped-types). This can be used to create a mapped type based on an input type, and whose keys are filtered/transformed with a [template literal type](#template-literal-type).
+
+##### Example
+
+```ts
+interface User {
+  name: string
+  age: number
+}
+
+type ImpossibleMatcher = {
+  [K in `on${Capitalize<keyof User>}Changed`]: (value: User[K]) => void
+}
+/*
+TS compiler error on `User[K]`:
+Type 'K' cannot be used to index type 'User'.(2536)
+*/
+
+type Matcher = {
+  [K in keyof User as `on${Capitalize<K>}Changed`]: (value: User[K]) => void
+}
+/*
+type Matcher = {
+  onNameChanged: (value: string) => void
+  onAgeChanged: (value: number) => void
+}
+*/
+```
+
+Without key remapping, we managed to create a custom key for the `ImpossibleMatcher` mapped type. But, we did not preserve the original key `K in keyof User`, so we could not use `User[K]`, as `K` was not a key of `User` anymore.
+
+Thanks to key remapping though (cf. the `as` syntax), we were able to build `Matcher` with custom keys, while preserving the original key `K in keyof User`, thus allowing us to use `User[K]`.
+
 ### Literal type
 
 Literal types were introduced in [TypeScript v1.8](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-1-8.html#string-literal-types). They are meant to expect only a specific set of strings, numbers or boolean, instead of "_any_ string, number or boolean".
@@ -404,6 +441,24 @@ Types `A`, `B`, `C` and `D` are all uniform mappings of `Config` thanks to the b
   ```
 
 There is a [section in the official documentation](https://www.typescriptlang.org/docs/handbook/advanced-types.html#mapped-types) about mapped types.
+
+### Template literal string type
+
+Template literal string types were introduced in [TypeScript v4.1](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-1.html#template-literal-types). They are essentially [string literal types](#literal-type) built using the same syntax as JavaScript's [template literals/template strings](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals).
+
+These types were improved in [TypeScript v4.3](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-3.html#template-string-type-improvements), with better [type inference](#type-inference) support.
+
+##### Example
+
+```ts
+type Alignment = 'top' | 'right' | 'bottom' | 'left'
+type PositioningType = 'margin' | 'padding'
+
+type Position = `${PositioningType}-${Alignment}`
+// type Position = 'margin-top' | 'margin-right' | 'margin-bottom' | 'margin-left'
+//                 | 'padding-top' | 'padding-right' | 'padding-bottom' | 'padding-left'
+```
+
 
 ### Type alias
 
