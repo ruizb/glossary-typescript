@@ -31,6 +31,7 @@ You may not agree with some definitions or examples in this document. Please let
 - [Type narrowing](#type-narrowing)
 - [Type predicate](#type-predicate)
 - [Union type](#union-type)
+- [Variadic tuple type](#variadic-tuple-type)
 
 ## Glossary
 
@@ -599,3 +600,36 @@ declare const value: string | number | boolean
 ```
 
 Here, `value` type can be either `string`, `number` or `boolean`.
+
+### Variadic tuple type
+
+Variadic tuple types were introduced in [TypeScript v4.0](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-0.html#variadic-tuple-types). These are essentially tuple types, except that some of their parts can have a number of elements that can vary.
+
+##### Example
+
+```ts
+type Wagon = 'wagon'
+type Train = ['head-train', ...Wagon[], 'end-train']
+
+const train: Train = ['head-train', 'wagon', 'wagon', 'end-train']
+const brokenTrain: Train = ['head-train', 'wagon', 'wagon']
+/* TS compiler error for `brokenTrain`:
+Type '["head-train", "wagon", "wagon"]' is not assignable to type 'Train'.
+  Type at position 2 in source is not compatible with type at position 2 in target.
+    Type '"wagon"' is not assignable to type '"end-train"'.(2322)
+*/
+
+function head<A>(arr: readonly [A, ...any[]]): A {
+  return arr[0]
+}
+const a = head(['a', 42, true])    // `a` inferred as `string`
+const b = head([1, 2, 3] as const) // `b` inferred as `1`
+
+function tail<A extends any[]>(arr: readonly [any, ...A]): A {
+  const [, ...tail] = arr
+  return tail
+}
+
+const c = tail(['a', 42, true])    // `c` inferred as `[number, boolean]`
+const d = tail([1, 2, 3] as const) // `b` inferred as `[2, 3]`
+```
